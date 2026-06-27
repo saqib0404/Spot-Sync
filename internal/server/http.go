@@ -2,6 +2,7 @@ package server
 
 import (
 	"Spot-Sync/internal/config"
+	"Spot-Sync/internal/domains/users"
 	"fmt"
 	"net/http"
 
@@ -24,7 +25,7 @@ func (cv *CustomValidator) Validate(i any) error {
 
 func Start(cfg *config.Config, db *gorm.DB) {
 	// db.AutoMigrate(&user.User{}, &event.Event{}, &booking.Booking{})
-	db.AutoMigrate()
+	db.AutoMigrate(&users.User{})
 
 	e := echo.New()
 	// e.Use(middleware.RequestLogger())
@@ -33,7 +34,7 @@ func Start(cfg *config.Config, db *gorm.DB) {
 	e.GET("/", func(c *echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
-	// user.RegisterRoutes(e, db, cfg)
+	users.RegisterRoutes(e, db, cfg)
 	// event.RegisterRoutes(e, db)
 	// booking.RegisterRoutes(e, db, cfg)
 
