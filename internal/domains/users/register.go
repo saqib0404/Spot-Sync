@@ -17,6 +17,6 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api := e.Group("/api/v1/auth")
 
 	api.POST("/register", userhandler.CreateUser) //api/v1/auth/register
-	// api.POST("/login", userhandler.LoginUser)     //api/v1/auth/login
+	api.POST("/login", userhandler.LoginUser)     //api/v1/auth/login
 	// api.GET("/get-me", userhandler.GetMe, middleware.AuthMiddleware(jwtService))
 }

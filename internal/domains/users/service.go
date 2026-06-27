@@ -3,6 +3,7 @@ package users
 import (
 	"Spot-Sync/internal/auth"
 	"Spot-Sync/internal/domains/users/dto"
+	"fmt"
 )
 
 type service struct {
@@ -46,34 +47,36 @@ func (s *service) CreateUser(req dto.CreateRequest) (*dto.Response, error) {
 
 }
 
-// func (s *service) LoginUser(req dto.LoginRequest) (*dto.Response, error) {
+func (s *service) LoginUser(req dto.LoginRequest) (*dto.LoginResponse, error) {
 
-// 	user, err := s.repo.GetUserByEmail(req.Email)
+	user, err := s.repo.GetUserByEmail(req.Email)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	if user == nil {
-// 		return nil, ErrorInvalidCredentials
-// 	}
+	if user == nil {
+		return nil, ErrorInvalidCredentials
+	}
 
-// 	if err := user.checkPassword(req.Password); err != nil {
-// 		return nil, ErrorInvalidCredentials
-// 	}
+	if err := user.checkPassword(req.Password); err != nil {
+		return nil, ErrorInvalidCredentials
+	}
 
-// 	token, err := s.jwtService.GenerateToken(user.ID, req.Email, user.Name)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("fail to generate token: %w", err)
-// 	}
+	token, err := s.jwtService.GenerateToken(user.ID, req.Email, user.Name, user.Role)
+	if err != nil {
+		return nil, fmt.Errorf("fail to generate token: %w", err)
+	}
 
-// 	response := dto.Response{
-// 		ID:        user.ID,
-// 		Name:      user.Name,
-// 		Email:     user.Email,
-// 		Token:     token,
-// 		CreatedAt: user.CreatedAt.String(),
-// 	}
-// 	return &response, nil
+	response := dto.LoginResponse{
+		Token: token,
+		User: dto.LoginUserResponse{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			Role:  user.Role,
+		},
+	}
 
-// }
+	return &response, nil
+}

@@ -63,45 +63,49 @@ func (h *handler) CreateUser(c *echo.Context) error {
 	})
 }
 
-// func (h *handler) LoginUser(c *echo.Context) error {
-// 	var req dto.LoginRequest
+func (h *handler) LoginUser(c *echo.Context) error {
+	var req dto.LoginRequest
 
-// 	if err := c.Bind(&req); err != nil {
-// 		return c.JSON(http.StatusBadRequest, httpresponse.ErrorResponse{
-// 			Code:    http.StatusBadRequest,
-// 			Message: "Invalid request payload",
-// 			Details: err.Error(),
-// 		})
-// 	}
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, httpresponse.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: "Invalid request payload",
+			Details: err.Error(),
+		})
+	}
 
-// 	if err := c.Validate(&req); err != nil {
-// 		return c.JSON(http.StatusBadRequest, httpresponse.ErrorResponse{
-// 			Code:    http.StatusBadRequest,
-// 			Message: "Validation failed",
-// 			Details: err.Error(),
-// 		})
-// 	}
+	if err := c.Validate(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, httpresponse.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: "Validation failed",
+			Details: err.Error(),
+		})
+	}
 
-// 	response, err := h.service.LoginUser(req)
-// 	if err != nil {
+	response, err := h.service.LoginUser(req)
+	if err != nil {
 
-// 		if errors.Is(err, ErrorInvalidCredentials) {
-// 			return c.JSON(http.StatusUnauthorized, httpresponse.ErrorResponse{
-// 				Code:    http.StatusUnauthorized,
-// 				Message: "Invalid email or password",
-// 				Details: err.Error(),
-// 			})
-// 		}
+		if errors.Is(err, ErrorInvalidCredentials) {
+			return c.JSON(http.StatusUnauthorized, httpresponse.ErrorResponse{
+				Code:    http.StatusUnauthorized,
+				Message: "Invalid email or password",
+				Details: err.Error(),
+			})
+		}
 
-// 		return c.JSON(http.StatusInternalServerError, httpresponse.ErrorResponse{
-// 			Code:    http.StatusInternalServerError,
-// 			Message: "Failed to login user",
-// 			Details: err.Error(),
-// 		})
-// 	}
+		return c.JSON(http.StatusInternalServerError, httpresponse.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Failed to login user",
+			Details: err.Error(),
+		})
+	}
 
-// 	return c.JSON(http.StatusOK, response)
-// }
+	return c.JSON(http.StatusCreated, map[string]any{
+		"success": true,
+		"message": "Login successfully",
+		"data":    response,
+	})
+}
 
 // func (h *handler) GetMe(c *echo.Context) error {
 // 	userID, ok := c.Get("user_id").(uint)
