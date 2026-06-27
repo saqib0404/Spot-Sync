@@ -1,7 +1,7 @@
 package parkings
 
 import (
-	"Spot-Sync/internal/domains/parkingzones/dto"
+	"Spot-Sync/internal/domains/parkings/dto"
 	"time"
 )
 
@@ -13,7 +13,7 @@ func NewService(repo Repository) *service {
 	return &service{repo: repo}
 }
 
-// 3. Create Parking Zone (POST /api/v1/zones)
+// Create Parking Zone (POST /api/v1/zones)
 func (s *service) CreateZone(req dto.CreateZoneRequest) (*dto.ZoneResponse, error) {
 	zone := Zone{
 		Name:          req.Name,
@@ -39,7 +39,7 @@ func (s *service) CreateZone(req dto.CreateZoneRequest) (*dto.ZoneResponse, erro
 	}, nil
 }
 
-// 4. Get All Parking Zones (GET /api/v1/zones)
+// Get All Parking Zones (GET /api/v1/zones)
 func (s *service) GetZones() ([]*dto.ZoneResponse, error) {
 	zones, err := s.repo.GetAll()
 	if err != nil {
@@ -63,7 +63,7 @@ func (s *service) GetZones() ([]*dto.ZoneResponse, error) {
 	return responses, nil
 }
 
-// 5. Get Single Parking Zone (GET /api/v1/zones/:id)
+// Get Single Parking Zone (GET /api/v1/zones/:id)
 func (s *service) GetZoneByID(id uint) (*dto.ZoneResponse, error) {
 	z, err := s.repo.GetByID(id)
 	if err != nil {

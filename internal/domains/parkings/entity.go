@@ -1,7 +1,7 @@
 package parkings
 
 import (
-	"Spot-Sync/internal/domains/parkingzones/dto"
+	"Spot-Sync/internal/domains/parkings/dto"
 	"time"
 
 	"gorm.io/gorm"

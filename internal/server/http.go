@@ -2,7 +2,7 @@ package server
 
 import (
 	"Spot-Sync/internal/config"
-	parkings "Spot-Sync/internal/domains/parkingZones"
+	"Spot-Sync/internal/domains/parkings"
 	"Spot-Sync/internal/domains/users"
 	"fmt"
 	"net/http"
