@@ -3,6 +3,7 @@ package server
 import (
 	"Spot-Sync/internal/config"
 	"Spot-Sync/internal/domains/parkings"
+	"Spot-Sync/internal/domains/reservations"
 	"Spot-Sync/internal/domains/users"
 	"fmt"
 	"net/http"
@@ -25,11 +26,9 @@ func (cv *CustomValidator) Validate(i any) error {
 }
 
 func Start(cfg *config.Config, db *gorm.DB) {
-	// db.AutoMigrate(&user.User{}, &event.Event{}, &booking.Booking{})
-	db.AutoMigrate(&users.User{}, &parkings.Zone{})
+	db.AutoMigrate(&users.User{}, &parkings.Zone{}, reservations.Reservation{})
 
 	e := echo.New()
-	// e.Use(middleware.RequestLogger())
 	e.Validator = &CustomValidator{validator: validator.New()}
 
 	e.GET("/", func(c *echo.Context) error {
@@ -37,7 +36,7 @@ func Start(cfg *config.Config, db *gorm.DB) {
 	})
 	users.RegisterRoutes(e, db, cfg)
 	parkings.RegisterRoutes(e, db, cfg)
-	// booking.RegisterRoutes(e, db, cfg)
+	reservations.RegisterRoutes(e, db, cfg)
 
 	port := fmt.Sprintf(":%s", cfg.Port)
 	if err := e.Start(port); err != nil {
