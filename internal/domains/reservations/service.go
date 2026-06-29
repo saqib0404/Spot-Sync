@@ -65,6 +65,10 @@ func (s *service) CancelReservation(userID uint, role string, resID uint) error 
 		return errors.New("forbidden")
 	}
 
+	if res.Status == StatusCancelled {
+		return ErrReservationAlreadyCancelled
+	}
+
 	return s.repo.UpdateStatus(res, StatusCancelled)
 }
 

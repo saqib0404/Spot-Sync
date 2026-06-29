@@ -24,6 +24,9 @@ func resErrorResponse(c *echo.Context, err error) error {
 	if errors.Is(err, ErrReservationNotFound) {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
 	}
+	if errors.Is(err, ErrReservationAlreadyCancelled) {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
 	if err.Error() == "forbidden" {
 		return c.JSON(http.StatusForbidden, map[string]string{"error": "Access denied: cannot modify this resource"})
 	}

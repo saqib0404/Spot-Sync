@@ -1,6 +1,7 @@
 package reservations
 
 import (
+	"Spot-Sync/internal/domains/parkings"
 	"errors"
 
 	"gorm.io/gorm"
@@ -8,8 +9,9 @@ import (
 )
 
 var (
-	ErrZoneFull            = errors.New("parking zone is completely full")
-	ErrReservationNotFound = errors.New("reservation not found")
+	ErrZoneFull                    = errors.New("parking zone is completely full")
+	ErrReservationNotFound         = errors.New("reservation not found")
+	ErrReservationAlreadyCancelled = errors.New("reservation is already cancelled")
 )
 
 type Repository interface {
@@ -32,14 +34,10 @@ func (r *repository) CreateAtomic(userID uint, zoneID uint, licensePlate string)
 	var reservation *Reservation
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		var zone struct {
-			ID            uint
-			TotalCapacity int
-		}
+		var zone parkings.Zone
 
 		// Lock row to protect concurrent reads
-		if err := tx.Table("zones").
-			Clauses(clause.Locking{Strength: "UPDATE"}).
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
 			Where("id = ? AND deleted_at IS NULL", zoneID).
 			First(&zone).Error; err != nil {
 			return err
